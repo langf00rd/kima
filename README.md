@@ -1,3 +1,3 @@
 # mooody
-Mood tracker / journal
-made for someone lol
+Mood tracker 😃 / journal 📝
+made for someone lol 😇
