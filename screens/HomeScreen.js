@@ -7,16 +7,12 @@ import styles from '../styles/styles';
 
 const HomeScreen = ({ navigation }) => {
 
-    // storage.remove({ key: 'originalPassword' })
-    // storage.remove({ key: 'password' })
-    // storage.remove({ key: 'currentMood' })
-    // storage.save({ key: 'notes', data: [] })
-
     const [currentMood, setCurrentMood] = useState('💎')
     const [bgColor, setColor] = useState('#797cd2')
 
     const [originalPassword, setOriginalPassword] = useState('')
     const [password, setPassword] = useState('')
+    const [pswdHint, setPswdHint] = useState('')
 
     // const addActionRef = createRef()
     const setPasswordActionRef = createRef()
@@ -31,14 +27,45 @@ const HomeScreen = ({ navigation }) => {
     useEffect(async () => {
         try {
             await storage.load({ key: 'originalPassword' })
-                .then(code => {
+                .then(async (code) => {
                     setOriginalPassword(code)
                     passwordActionRef.current?.setModalVisible()
+
+                    await storage.load({ key: 'pswdHint' }).then(hint => {
+                        console.log(hint)
+                        setPswdHint(hint)
+                    })
+
+                    passwordActionRef.current?.setModalVisible()
+
                 })
         }
         catch (e) { setPasswordActionRef.current?.setModalVisible() }
 
     }, [originalPassword, password])
+
+    const resetApp = () => {
+
+        Alert.alert('', "This will reset the app's data including your notes and password. This action cannot be reversed. Are you sure you want to continue?", [
+            { text: "Cancel", onPress: () => { } },
+            {
+                text: "Yes", onPress: () => {
+                    if (password.trim() !== '') {
+                        storage.remove({ key: 'originalPassword' })
+                        storage.remove({ key: 'password' })
+                        storage.remove({ key: 'currentMood' })
+                        storage.remove({ key: 'pswdHint' })
+                        storage.save({ key: 'notes', data: [] })
+
+                        lockApp()
+                        return
+                    }
+
+                    Alert.alert('', "Enter your password and tap the 'want to clear app...' to proceed to clearing the app's data")
+                }
+            },
+        ])
+    }
 
     const lockApp = () => {
         setOriginalPassword('')
@@ -108,6 +135,7 @@ const HomeScreen = ({ navigation }) => {
 
         if (pswd.trim() != '') {
             await storage.save({ key: 'originalPassword', data: pswd });
+            await storage.save({ key: 'pswdHint', data: `Hint: ${pswdHint}` });
             await storage.save({ key: 'notes', data: [] })
             await storage.save({ key: 'currentMood', data: ({ 'emoji': '💎', 'emojiName': 'Normal' }) })
 
@@ -117,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
         }
 
         Vibration.vibrate(50, false);
-        alert('Please enter a password')
+        Alert.alert('', 'Please enter a password')
     }
 
     const checkPswd = async () => {
@@ -130,7 +158,7 @@ const HomeScreen = ({ navigation }) => {
         }
 
         Vibration.vibrate(70, false);
-        alert('You entered the wrong password')
+        Alert.alert('', 'You entered the wrong password')
     }
 
     const setPswdUI = () => {
@@ -141,8 +169,8 @@ const HomeScreen = ({ navigation }) => {
                     <View style={styles.space10} />
                     Set a password
                 </Text>
-                <View style={styles.space10} />
-                <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 20 }}>This password will be required anytime you open the app. This makes your notes stay private</Text>
+                <View style={styles.space20} />
+                <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 20 }}>This password will be required anytime you open the app. It can't be changed, making your notes stay private and secure</Text>
 
                 <View style={styles.space30} />
                 <TextInput
@@ -151,6 +179,19 @@ const HomeScreen = ({ navigation }) => {
                     keyboardType={'default'}
                     style={styles.pswdInput}
                     placeholder='Enter a new password'
+                    placeholderTextColor='#f1f1f155'
+                />
+
+                <View style={{ width: 30, height: 30 }} />
+                <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 20 }}>Add a password hint (optional)</Text>
+                <View style={styles.space10} />
+
+                <TextInput
+                    value={pswdHint}
+                    onChangeText={(val) => setPswdHint(val)}
+                    keyboardType={'default'}
+                    style={styles.pswdInput}
+                    placeholder='eg. my date of birth'
                     placeholderTextColor='#f1f1f155'
                 />
                 <View style={{ width: 30, height: 30 }} />
@@ -162,7 +203,7 @@ const HomeScreen = ({ navigation }) => {
 
         else return <View style={{ paddingBottom: 40 }}>
             <View style={styles.space20} />
-            <Text style={{ fontWeight: 'bold', fontSize: 23, color: '#fff', textAlign: 'center' }}> Your password is set  </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 23, color: '#fff', textAlign: 'center' }}> Your password 👉🏼 {originalPassword.toLocaleLowerCase().trim()}  </Text>
             <View style={styles.space20} />
             <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, borderRadius: 10 }} onPress={() => { closeSetPasswordActionRef() }}>
                 <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Awesome</Text>
@@ -179,7 +220,10 @@ const HomeScreen = ({ navigation }) => {
                     Enter your password
                 </Text>
 
+                <View style={styles.space20} />
+                <Text style={{ color: '#fff', textAlign: 'center' }}>{pswdHint}</Text>
                 <View style={styles.space30} />
+
                 <TextInput
                     value={password}
                     onChangeText={(val) => setPassword(val)}
@@ -192,16 +236,24 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, borderRadius: 10 }} onPress={() => { checkPswd() }}>
                     <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Done</Text>
                 </TouchableOpacity>
+
+                <View style={{ width: 30, height: 30 }} />
+
+                <TouchableOpacity onPress={() => { resetApp() }}>
+                    <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Want to clear app data? Learn more</Text>
+                </TouchableOpacity>
             </ScrollView>
 
-        else return <View style={{ paddingBottom: 40 }}>
-            <View style={styles.space20} />
-            <Text style={{ fontWeight: 'bold', fontSize: 23, color: '#fff', textAlign: 'center' }}> Welcome back  </Text>
-            <View style={styles.space20} />
-            <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, borderRadius: 10 }} onPress={() => { closePasswordActionRef() }}>
-                <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Okay</Text>
-            </TouchableOpacity>
-        </View>
+        else return <></>
+
+        // else return <View style={{ paddingBottom: 40 }}>
+        //     <View style={styles.space20} />
+        //     <Text style={{ fontWeight: 'bold', fontSize: 23, color: '#fff', textAlign: 'center' }}> Welcome back  </Text>
+        //     <View style={styles.space20} />
+        //     <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, borderRadius: 10 }} onPress={() => { closePasswordActionRef() }}>
+        //         <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Okay</Text>
+        //     </TouchableOpacity>
+        // </View>
     }
 
     return (
@@ -239,34 +291,34 @@ const HomeScreen = ({ navigation }) => {
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', paddingBottom: 50 }}>
                     {/* <ScrollView> */}
-                    <TouchableOpacity onPress={() => selectMood('😁', 'Happy')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😁', 'happy')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😁</Text>
                         <Text style={{ color: '#fff' }}>Happy</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => selectMood('😕', 'Meh')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😕', 'confused')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😕</Text>
                         <Text style={{ color: '#fff' }}>Meh</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => selectMood('😠', 'Angry')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😠', 'angry')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😠</Text>
                         <Text style={{ color: '#fff' }}>Angry</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => selectMood('😔', 'Sad')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😔', 'sad')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😔</Text>
                         <Text style={{ color: '#fff' }}>Sad</Text>
                     </TouchableOpacity>
 
                     {/*  */}
 
-                    <TouchableOpacity onPress={() => selectMood('😨', 'Fear')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😨', 'afraid')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😨</Text>
                         <Text style={{ color: '#fff' }}>Fear</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => selectMood('😱', 'Surprise')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😱', 'surprised')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😱</Text>
                         <Text style={{ color: '#fff' }}>Surprise</Text>
                     </TouchableOpacity>
@@ -276,7 +328,7 @@ const HomeScreen = ({ navigation }) => {
                         <Text style={{ color: '#fff' }}>Disgust</Text>
                     </TouchableOpacity> */}
 
-                    <TouchableOpacity onPress={() => selectMood('🤢', 'Disgust')} activeOpacity={0.7} style={[styles.moodSelector, { width: '85%' }]}>
+                    <TouchableOpacity onPress={() => selectMood('🤢', 'disgusted')} activeOpacity={0.7} style={[styles.moodSelector, { width: '85%' }]}>
                         <Text style={{ fontSize: 50 }}>🤢</Text>
                         <Text style={{ color: '#fff' }}>Disgust</Text>
                     </TouchableOpacity>
@@ -284,7 +336,9 @@ const HomeScreen = ({ navigation }) => {
                 </View>
             </ScrollView>
 
-            <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('AddNoteScreen')}>
+            <TouchableOpacity
+                style={{ backgroundColor: '#FF6666', padding: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                onPress={() => navigation.navigate('AddNoteScreen')}>
                 <Icon name='ios-add-sharp' size={30} color='#fff' />
                 <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>Add a note...</Text>
             </TouchableOpacity>
