@@ -2,14 +2,29 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const styles = StyleSheet.create({
     moodSelector: {
+        // flexDirection: 'column',
+        // alignItems: 'center',
+        // width: '40%',
+        // paddingVertical: 10,
+        // borderRadius: 25,
+        // margin: 10,
+        // borderWidth: 2,
+        // borderColor: '#f1f1f122'
+
         flexDirection: 'column',
         alignItems: 'center',
         width: '40%',
         paddingVertical: 10,
         borderRadius: 25,
-        margin: 10,
+        margin: 5,
         borderWidth: 2,
+        backgroundColor: '#f1f1f111',
         borderColor: '#f1f1f122'
+    },
+
+    space5: {
+        width: 5,
+        height: 5
     },
 
     space10: {
@@ -41,6 +56,22 @@ const styles = StyleSheet.create({
     sheetScrollView: {
         height: Dimensions.get('window').height / 2,
         paddingTop: 40
+    },
+
+    flex: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+
+    flexBetween: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    flexTop: {
+        flexDirection: 'row',
+        alignItems: 'flex-start'
     },
 
     pswdInput: {

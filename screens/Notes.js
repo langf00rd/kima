@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core'
 import React, { useState, useEffect } from 'react'
 import { Alert, Dimensions, StatusBar, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Entypo'
 import storage from '../storage/storage'
 import styles from '../styles/styles'
 import ViewNote from './ViewNote'
@@ -69,7 +69,7 @@ const Notes = ({ navigation }) => {
     const clearAllNotesUI = () => {
         if (hasNotes)
             return <TouchableOpacity onPress={() => clearAllNotes()}>
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Clear all</Text>
+                <Text style={{ fontWeight: 'bold', color: '#fff', textDecorationLine: 'underline' }}>Clear all</Text>
             </TouchableOpacity>
     }
 
@@ -81,8 +81,10 @@ const Notes = ({ navigation }) => {
 
             <View style={{ padding: 20, paddingTop: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}><Icon name='ios-return-down-back' color='#fff' size={30} /></TouchableOpacity>
-                    <View style={{ width: 20, height: 20 }} />
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon name='chevron-thin-left' color='#fff' size={30} />
+                    </TouchableOpacity>
+                    <View style={styles.space10} />
                     <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>My notes</Text>
                 </View>
 
@@ -93,7 +95,7 @@ const Notes = ({ navigation }) => {
                 {hasNotesUI()}
                 {
                     allNotes.map((note, index) => {
-                        return <View key={index}>{noteItem(note.date, note.time, note.mood, note.content, note.noteId, navigation)}</View>
+                        return <View key={index}>{noteItem(note.date, note.time, note.mood, note.content, note.noteId, note.title, navigation)}</View>
                     })
                 }
             </ScrollView>
@@ -101,7 +103,7 @@ const Notes = ({ navigation }) => {
     )
 }
 
-const noteItem = (date, time, mood, content, noteId, navigation) => {
+const noteItem = (date, time, mood, content, noteId, title, navigation) => {
 
     const removeNote = async (id) => {
         const allNotes = await storage.load({ key: 'notes' })
@@ -124,22 +126,51 @@ const noteItem = (date, time, mood, content, noteId, navigation) => {
         ])
     }
 
+    // return <TouchableOpacity
+    //     onPress={() => navigation.navigate('ViewNote', { noteData: { date, time, mood, content, noteId } })}
+    //     style={{ marginBottom: 10, padding: 10, borderRadius: 10, backgroundColor: '#e7d6c859', }}>
+
+    //     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+    //         <Text style={{ fontSize: 40 }}>{mood}</Text>
+
+    // <TouchableOpacity onPress={() => removeNote(noteId)}>
+    //     <Icon name='ios-close-outline' size={25} />
+    // </TouchableOpacity>
+    //     </View>
+
+    //     <View style={{ width: 10, height: 10 }} />
+
+    //     <View>
+    //         <Text numberOfLines={6} style={{ fontSize: 17 }}>{content}</Text>
+    //         <View style={{ width: 10, height: 10 }} />
+    //         <Text style={{ color: '#24242444', fontSize: 11, }}>{date} - {time}</Text>
+    //     </View>
+    // </TouchableOpacity>
+
     return <TouchableOpacity
-        onPress={() => navigation.navigate('ViewNote', { noteData: { date, time, mood, content, noteId } })}
-        style={{ marginBottom: 10, padding: 10, borderRadius: 10, backgroundColor: '#e7d6c859', }}>
+        activeOpacity={0.2}
+        onPress={() => navigation.navigate('ViewNote', { noteData: { date, time, mood, content, noteId, title } })}
+        style={[styles.flexTop, { padding: 10, marginBottom: 10, borderRadius: 10, paddingVertical: 20, paddingBottom: 10, borderColor: '#f1f1f1', borderWidth: 1, }]}>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 40 }}>{mood}</Text>
-            <TouchableOpacity onPress={() => removeNote(noteId)}><Icon name='ios-close-outline' size={25} /></TouchableOpacity>
+        <Text style={{ fontSize: 40 }}>{mood}</Text>
+        <View style={styles.space10} />
+
+
+        <View style={{ width: '80%' }}>
+
+
+            <Text style={{ fontWeight: 'bold' }}>{title}</Text>
+            <View style={styles.space10} />
+
+            <View style={{ width: '100%' }}><Text numberOfLines={5} style={{ lineHeight: 20 }} >{content}</Text></View>
+            <View style={styles.space10} />
+
+            <View style={styles.flexBetween}>
+                <Text style={{ color: '#24242488' }}>{date} - {time}</Text>
+                <TouchableOpacity onPress={() => removeNote(noteId)}><Text style={{ color: '#FF6666', fontWeight: 'bold' }}>DELETE</Text></TouchableOpacity>
+            </View>
         </View>
 
-        <View style={{ width: 10, height: 10 }} />
-
-        <View>
-            <Text numberOfLines={6} style={{ fontSize: 17 }}>{content}</Text>
-            <View style={{ width: 10, height: 10 }} />
-            <Text style={{ color: '#24242444', fontSize: 11, }}>{date} - {time}</Text>
-        </View>
     </TouchableOpacity>
 }
 
