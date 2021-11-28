@@ -1,5 +1,5 @@
 import React, { useEffect, useState, createRef } from 'react';
-import { StatusBar, Platform, ScrollView, Dimensions, Vibration, Text, TextInput, TouchableOpacity, View, Alert, KeyboardAvoidingView } from 'react-native';
+import { StatusBar, Platform, ScrollView, Dimensions, BackHandler, Vibration, Text, TextInput, TouchableOpacity, View, Alert, KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionSheet from "react-native-actions-sheet";
 import storage from '../storage/storage'
@@ -13,6 +13,7 @@ const HomeScreen = ({ navigation }) => {
     const [originalPassword, setOriginalPassword] = useState('')
     const [password, setPassword] = useState('')
     const [pswdHint, setPswdHint] = useState('')
+    const [name, setName] = useState('')
 
     const setPasswordActionRef = createRef()
     const passwordActionRef = createRef()
@@ -56,6 +57,7 @@ const HomeScreen = ({ navigation }) => {
                         storage.save({ key: 'notes', data: [] })
 
                         lockApp()
+                        BackHandler.exitApp();
                         return
                     }
 
@@ -102,7 +104,6 @@ const HomeScreen = ({ navigation }) => {
                 break;
             case '😱':
                 setColor('#ED8327')
-                // setColor('purple')
                 break;
             case '🤢':
                 setColor('#24550E')
@@ -127,12 +128,16 @@ const HomeScreen = ({ navigation }) => {
 
     const setPswd = async () => {
         const pswd = originalPassword.toLowerCase().trim().split(/\s+/).join("")
+        name.trim()
+
+        if (name.length <= 1) { Alert.alert('', 'Please enter a name with more than 1 character'); return }
 
         if (pswd.trim() != '') {
             await storage.save({ key: 'originalPassword', data: pswd });
             await storage.save({ key: 'pswdHint', data: `Hint: ${pswdHint}` });
-            await storage.save({ key: 'notes', data: [] })
+            await storage.save({ key: 'name', data: name })
             await storage.save({ key: 'currentMood', data: ({ 'emoji': '💎', 'emojiName': 'Normal' }) })
+            await storage.save({ key: 'notes', data: [] })
 
             closeSetPasswordActionRef()
             setNewPswdSet(true)
@@ -167,7 +172,23 @@ const HomeScreen = ({ navigation }) => {
                 <View style={styles.space20} />
                 <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 20 }}>This password will be required anytime you open the app. It can't be changed, making your notes stay private and secure</Text>
 
-                <View style={styles.space30} />
+                <View style={{ width: 30, height: 30 }} />
+                <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 20 }}>What is your name?</Text>
+                <View style={styles.space10} />
+
+                <TextInput
+                    value={name}
+                    onChangeText={(val) => setName(val)}
+                    keyboardType={'default'}
+                    style={styles.pswdInput}
+                    placeholder='eg. Langford'
+                    placeholderTextColor='#f1f1f155'
+                />
+
+                <View style={{ width: 30, height: 30 }} />
+                <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 20 }}>Choose a password</Text>
+                <View style={styles.space10} />
+
                 <TextInput
                     value={originalPassword}
                     onChangeText={(val) => setOriginalPassword(val)}
@@ -279,7 +300,7 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{ width: 20, height: 20 }} />
 
                 <Text style={{ fontSize: 21, textAlign: 'center', color: '#fff' }}>
-                    Hey, how are you feeling?
+                    {name}, how are you feeling?
                 </Text>
 
                 <View style={{ width: 20, height: 20 }} />
