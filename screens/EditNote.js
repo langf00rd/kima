@@ -3,25 +3,22 @@ import { Text, View, StatusBar, TouchableOpacity, ScrollView, Alert, TextInput }
 import Icon from 'react-native-vector-icons/Entypo'
 import styles from '../styles/styles'
 import storage from '../storage/storage'
-// import { ViewNote } from './ViewNote'
 
 const EditNote = ({ navigation, route }) => {
-    console.log('---->', route)
 
     const [content, setContent] = useState(route.params.noteData.content)
     const [mood, setMood] = useState(route.params.noteData.mood)
     const [title, setTitle] = useState(route.params.noteData.title)
 
-    // let routeDate = route.params.noteData.date
-    // let routeContent = route.params.noteData.content
-    // let routeNoteId = route.params.noteData.noteId
-    // let routeTime = route.params.noteData.time
-    // let routeMood = route.params.noteData.mood
-
     const saveNote = async () => {
-
+        // console.log(mood.length)
         await storage.load({ key: 'notes' })
             .then(async (data) => {
+
+                // if (mood.trim().length > 1) {
+                //     Alert.alert('', 'Your mood should be a single character, an emoji')
+                //     return
+                // }
 
                 if (content.trim() !== '')
                     Alert.alert('', 'Do you want to save your changes?', [
@@ -39,13 +36,11 @@ const EditNote = ({ navigation, route }) => {
                                     const element = data[i];
 
                                     if (element.noteId === route.params.noteData.noteId) {
-                                        console.log(element.noteId)
                                         p.splice(i, 1);
 
                                         route.params.noteData.content = content.trim()
                                         route.params.noteData.mood = mood
                                         route.params.noteData.title = title
-                                        console.log('---->', route.params.noteData)
 
                                         p.push(route.params.noteData)
                                     }
@@ -66,7 +61,7 @@ const EditNote = ({ navigation, route }) => {
             <View style={{ padding: 20, paddingTop: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => { navigation.navigate('ViewNote', { noteData: route.params.noteData }) }}>
-                        <Icon name='chevron-thin-left' color='#fff' size={30} />
+                        <Icon name='chevron-thin-left' color='#fff' size={26} />
                     </TouchableOpacity>
                     <View style={styles.space10} />
                     <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>Edit note</Text>
@@ -79,18 +74,15 @@ const EditNote = ({ navigation, route }) => {
 
             <ScrollView style={{ padding: 20, backgroundColor: '#fff' }}>
 
-                {/* <Text style={{ fontSize: 50 }}>{route.params.noteData.mood}</Text> */}
-
                 <View style={styles.flex}>
                     <Icon name='plus' size={20} color='#24242444' />
                     <View style={styles.space5} />
                     <TextInput
                         value={mood}
+                        maxLength={1}
                         onChangeText={(val) => setMood(val)}
-                        // autoFocus={true}
-                        // multiline={true}
                         style={{ fontSize: 50 }}
-                        placeholder='Your mood...'
+                        placeholder='mood emoji...'
                     />
                 </View>
 
@@ -102,43 +94,23 @@ const EditNote = ({ navigation, route }) => {
                     <TextInput
                         value={title}
                         onChangeText={(val) => setTitle(val)}
-                        // autoFocus={true}
-                        // multiline={true}
                         style={{ fontSize: 21, fontWeight: 'bold' }}
                         placeholder='Set note title...'
                     />
                 </View>
 
-                {/* <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{route.params.noteData.title}</Text> */}
                 <View style={styles.space10} />
                 <Text style={{ color: '#24242488' }}>{route.params.noteData.date} at {route.params.noteData.time}</Text>
                 <View style={styles.space30} />
 
-
-                {/* <Text>{route.params.noteData.date} at {route.params.noteData.time}</Text> */}
-                {/* <View style={styles.space10} /> */}
-                {/* <TextInput
-                    value={mood}
-                    onChangeText={(val) => setMood(val)}
-                    autoFocus={true}
-                    multiline={true}
-                    style={{ fontSize: 50 }}
-                    placeholder='Your mood.'
-                /> */}
-                {/* <View style={styles.space10} /> */}
-
-                {/* <View style={styles.flex}> */}
                 <Icon name='plus' size={20} color='#24242444' />
-                {/* <View style={styles.space5} /> */}
                 <TextInput
                     value={content}
                     onChangeText={(val) => setContent(val)}
-                    autoFocus={true}
                     multiline={true}
                     style={{ paddingVertical: 10, fontSize: 18, lineHeight: 30, paddingBottom: 100 }}
                     placeholder='Write your content here...'
                 />
-                {/* </View> */}
 
             </ScrollView>
         </View>

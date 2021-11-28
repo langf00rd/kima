@@ -14,7 +14,6 @@ const HomeScreen = ({ navigation }) => {
     const [password, setPassword] = useState('')
     const [pswdHint, setPswdHint] = useState('')
 
-    // const addActionRef = createRef()
     const setPasswordActionRef = createRef()
     const passwordActionRef = createRef()
 
@@ -32,7 +31,6 @@ const HomeScreen = ({ navigation }) => {
                     passwordActionRef.current?.setModalVisible()
 
                     await storage.load({ key: 'pswdHint' }).then(hint => {
-                        console.log(hint)
                         setPswdHint(hint)
                     })
 
@@ -85,14 +83,12 @@ const HomeScreen = ({ navigation }) => {
         switch (emoji) {
             case '😁':
                 setColor('#3A84C9')
-                // setColor('#00B8F6')
                 break;
             case '😕':
                 setColor('#797cd2')
                 break;
             case '😠':
                 setColor('#E7504C')
-                // setColor('#C22727')
                 break;
             case '😭':
                 setColor('#5B5AD4')
@@ -131,7 +127,6 @@ const HomeScreen = ({ navigation }) => {
 
     const setPswd = async () => {
         const pswd = originalPassword.toLowerCase().trim().split(/\s+/).join("")
-        console.log(pswd)
 
         if (pswd.trim() != '') {
             await storage.save({ key: 'originalPassword', data: pswd });
@@ -244,16 +239,16 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </ScrollView>
 
-        else return <></>
+        // else return <></>
 
-        // else return <View style={{ paddingBottom: 40 }}>
-        //     <View style={styles.space20} />
-        //     <Text style={{ fontWeight: 'bold', fontSize: 23, color: '#fff', textAlign: 'center' }}> Welcome back  </Text>
-        //     <View style={styles.space20} />
-        //     <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, borderRadius: 10 }} onPress={() => { closePasswordActionRef() }}>
-        //         <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Okay</Text>
-        //     </TouchableOpacity>
-        // </View>
+        else return <View style={{ paddingBottom: 40 }}>
+            <View style={styles.space20} />
+            <Text style={{ fontWeight: 'bold', fontSize: 23, color: '#fff', textAlign: 'center' }}> Nice to see you again  </Text>
+            <View style={styles.space20} />
+            <TouchableOpacity style={{ backgroundColor: '#FF6666', padding: 20, borderRadius: 10 }} onPress={() => { closePasswordActionRef() }}>
+                <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>Yeah</Text>
+            </TouchableOpacity>
+        </View>
     }
 
     return (
@@ -290,7 +285,6 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{ width: 20, height: 20 }} />
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', paddingBottom: 50 }}>
-                    {/* <ScrollView> */}
                     <TouchableOpacity onPress={() => selectMood('😁', 'happy')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😁</Text>
                         <Text style={{ color: '#fff' }}>Happy</Text>
@@ -311,9 +305,7 @@ const HomeScreen = ({ navigation }) => {
                         <Text style={{ color: '#fff' }}>Sad</Text>
                     </TouchableOpacity>
 
-                    {/*  */}
-
-                    <TouchableOpacity onPress={() => selectMood('😨', 'afraid')} activeOpacity={0.7} style={styles.moodSelector}>
+                    <TouchableOpacity onPress={() => selectMood('😨', 'scared')} activeOpacity={0.7} style={styles.moodSelector}>
                         <Text style={{ fontSize: 50 }}>😨</Text>
                         <Text style={{ color: '#fff' }}>Fear</Text>
                     </TouchableOpacity>
@@ -323,16 +315,10 @@ const HomeScreen = ({ navigation }) => {
                         <Text style={{ color: '#fff' }}>Surprise</Text>
                     </TouchableOpacity>
 
-                    {/* <TouchableOpacity onPress={() => selectMood('🤢')} activeOpacity={0.7} style={styles.moodSelector}>
-                        <Text style={{ fontSize: 50 }}>🤢</Text>
-                        <Text style={{ color: '#fff' }}>Disgust</Text>
-                    </TouchableOpacity> */}
-
-                    <TouchableOpacity onPress={() => selectMood('🤢', 'disgusted')} activeOpacity={0.7} style={[styles.moodSelector, { width: '85%' }]}>
+                    <TouchableOpacity onPress={() => selectMood('🤢', 'disgusted')} activeOpacity={0.7} style={[styles.moodSelector, { width: '81%' }]}>
                         <Text style={{ fontSize: 50 }}>🤢</Text>
                         <Text style={{ color: '#fff' }}>Disgust</Text>
                     </TouchableOpacity>
-                    {/* </ScrollView> */}
                 </View>
             </ScrollView>
 

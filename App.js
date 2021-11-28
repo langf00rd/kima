@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, StatusBar, Text } from 'react-native';
-import { NavigationContainer, useNavigation, getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import AddNoteScreen from './screens/AddNoteScreen';
@@ -8,15 +7,11 @@ import Notes from './screens/Notes';
 import ViewNote from './screens/ViewNote';
 import EditNote from './screens/EditNote';
 
-// const HomeScreen = () => { return <Text>lol</Text> }
-
-
 export default function App() {
   const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer>
-      {/* <StatusBar backgroundColor="transparent" barStyle="light-content" /> */}
       <Stack.Navigator>
         <Stack.Screen
           component={HomeScreen}
@@ -52,12 +47,3 @@ export default function App() {
 
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

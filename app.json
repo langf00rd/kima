@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mooody",
-    "slug": "Mooody",
+    "name": "Kima",
+    "slug": "Kima",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.multiverse.mooody",
+      "package": "com.multiverse.kima",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

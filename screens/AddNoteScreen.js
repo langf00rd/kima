@@ -1,7 +1,6 @@
-import React, { useEffect, useState, createRef } from 'react';
-import { StatusBar, Platform, ScrollView, Dimensions, Vibration, Text, TextInput, TouchableOpacity, View, Alert, KeyboardAvoidingView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import ActionSheet from "react-native-actions-sheet";
 import storage from '../storage/storage'
 import styles from '../styles/styles';
 
@@ -18,7 +17,6 @@ const AddNoteScreen = ({ navigation }) => {
 
     useEffect(async () => {
         await storage.load({ key: 'currentMood' }).then(data => {
-            // console.log(data)
             setCurrentMood(data.emoji)
             setCurrentMoodName(data.emojiName)
 
@@ -26,7 +24,6 @@ const AddNoteScreen = ({ navigation }) => {
     }, [currentMood, currentMoodName])
 
     const saveNote = async () => {
-        // if (currentMood === null) { alert('Please select your current mood'); return }
         if (text.trim() === '') { alert('Please add a note'); return }
 
         setText(text.trim())
@@ -48,7 +45,6 @@ const AddNoteScreen = ({ navigation }) => {
         await storage.save({ key: 'notes', data: newNotes })
 
         navigation.navigate('ViewNote', { noteData: ({ 'date': date, 'time': time, 'mood': currentMood, 'content': text, 'noteId': timestamp, 'title': title }) })
-        // Alert.alert('Saved', 'Your note was saved')
     }
 
     return <View style={styles.container}>
@@ -60,7 +56,7 @@ const AddNoteScreen = ({ navigation }) => {
                     <Icon name='chevron-thin-left' color='#fff' size={30} />
                 </TouchableOpacity>
                 <View style={styles.space10} />
-                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>Edit note</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>Add a note</Text>
             </View>
 
             <TouchableOpacity onPress={() => saveNote()} style={{ backgroundColor: '#FF6666', paddingHorizontal: 20, borderRadius: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -85,7 +81,6 @@ const AddNoteScreen = ({ navigation }) => {
                 onChangeText={(val) => setTitle(val)}
                 style={{ fontSize: 21, fontWeight: 'bold' }}
                 multiline={true}
-                autoFocus={true}
                 placeholder='Add a note title...' />
 
             <View style={styles.space20} />
@@ -95,9 +90,7 @@ const AddNoteScreen = ({ navigation }) => {
                 onChangeText={(val) => setText(val)}
                 style={{ width: '100%', borderRadius: 13, lineHeight: 30, fontSize: 19, paddingBottom: 50 }}
                 multiline={true}
-                autoFocus={true}
                 placeholder='Write your notes here...' />
-            {/* </ScrollView> */}
         </ScrollView>
     </View>
 }

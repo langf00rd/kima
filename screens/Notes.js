@@ -1,26 +1,19 @@
-import { useNavigation } from '@react-navigation/core'
 import React, { useState, useEffect } from 'react'
 import { Alert, Dimensions, StatusBar, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import storage from '../storage/storage'
 import styles from '../styles/styles'
-import ViewNote from './ViewNote'
 
 const Notes = ({ navigation }) => {
     const [allNotes, setAllNotes] = useState([])
     const [hasNotes, setHasNotes] = useState(true)
 
     useEffect(async () => {
-        // console.log('change...')
 
         try {
-            // await storage.remove({ key: 'notes' })
-            // storage.save({ key: 'notes', data: [] })
 
             await storage.load({ key: 'notes' })
                 .then(data => {
-
-                    // console.log(data.length)
 
                     let p = []
 
@@ -33,8 +26,6 @@ const Notes = ({ navigation }) => {
                     else setHasNotes(false)
 
                     p.reverse()
-                    // console.log(p)
-
                     setAllNotes(p)
 
                 })
@@ -73,7 +64,6 @@ const Notes = ({ navigation }) => {
             </TouchableOpacity>
     }
 
-
     return (
         <View style={styles.container}>
 
@@ -82,7 +72,7 @@ const Notes = ({ navigation }) => {
             <View style={{ padding: 20, paddingTop: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name='chevron-thin-left' color='#fff' size={30} />
+                        <Icon name='chevron-thin-left' color='#fff' size={26} />
                     </TouchableOpacity>
                     <View style={styles.space10} />
                     <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>My notes</Text>
@@ -116,8 +106,6 @@ const noteItem = (date, time, mood, content, noteId, title, navigation) => {
                     for (var i = allNotes.length - 1; i >= 0; i--) {
                         if (allNotes[i].noteId === id) {
                             allNotes.splice(i, 1);
-
-                            console.log(id)
                         }
                     }
                     await storage.save({ key: 'notes', data: allNotes })
@@ -125,27 +113,6 @@ const noteItem = (date, time, mood, content, noteId, title, navigation) => {
             },
         ])
     }
-
-    // return <TouchableOpacity
-    //     onPress={() => navigation.navigate('ViewNote', { noteData: { date, time, mood, content, noteId } })}
-    //     style={{ marginBottom: 10, padding: 10, borderRadius: 10, backgroundColor: '#e7d6c859', }}>
-
-    //     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-    //         <Text style={{ fontSize: 40 }}>{mood}</Text>
-
-    // <TouchableOpacity onPress={() => removeNote(noteId)}>
-    //     <Icon name='ios-close-outline' size={25} />
-    // </TouchableOpacity>
-    //     </View>
-
-    //     <View style={{ width: 10, height: 10 }} />
-
-    //     <View>
-    //         <Text numberOfLines={6} style={{ fontSize: 17 }}>{content}</Text>
-    //         <View style={{ width: 10, height: 10 }} />
-    //         <Text style={{ color: '#24242444', fontSize: 11, }}>{date} - {time}</Text>
-    //     </View>
-    // </TouchableOpacity>
 
     return <TouchableOpacity
         activeOpacity={0.2}

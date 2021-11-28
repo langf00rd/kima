@@ -2,15 +2,6 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const styles = StyleSheet.create({
     moodSelector: {
-        // flexDirection: 'column',
-        // alignItems: 'center',
-        // width: '40%',
-        // paddingVertical: 10,
-        // borderRadius: 25,
-        // margin: 10,
-        // borderWidth: 2,
-        // borderColor: '#f1f1f122'
-
         flexDirection: 'column',
         alignItems: 'center',
         width: '40%',

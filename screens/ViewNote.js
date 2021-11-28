@@ -1,26 +1,19 @@
 import React, { } from 'react'
-import { Alert, Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import styles from '../styles/styles'
-import EditNote from './EditNote'
 
 const ViewNote = ({ navigation, route }) => {
-    // console.log(route)
-
     return (
         <View style={styles.container}>
             <View style={[styles.flexBetween, { padding: 20, paddingTop: 0 }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name='chevron-thin-left' color='#fff' size={30} />
+                        <Icon name='chevron-thin-left' color='#fff' size={26} />
                     </TouchableOpacity>
                     <View style={styles.space10} />
                     <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>Read note</Text>
                 </View>
-
-                {/* <TouchableOpacity onPress={() => navigation.navigate('EditNote', { noteData: route.params.noteData })}>
-                    <Icon name='text-outline' size={25} color='#fff' />
-                </TouchableOpacity> */}
 
                 <TouchableOpacity onPress={() => navigation.navigate('EditNote', { noteData: route.params.noteData })}>
                     <Text style={{ fontWeight: 'bold', color: '#fff', textDecorationLine: 'underline' }}>Edit note</Text>
